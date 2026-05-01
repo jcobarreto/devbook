@@ -3,6 +3,8 @@ $('#new-post').on('submit', createPost);
 $(document).on('click', '.like-post', likePost);
 $(document).on('click', '.unlike-post', unlikePost);
 
+$('#update-post').on('click', updatePost);
+
 function createPost(event) {
   event.preventDefault();
 
@@ -71,5 +73,26 @@ function unlikePost(event) {
     alert("Error unliking post!");
   }).always(function() {
     clickedElement.prop('disabled', false);
+  });
+}
+
+function updatePost(event) {
+  $(this).prop('disabled', true);
+
+  const postID = clickedElement.data('post-id');
+
+  $.ajax({
+    url: `/posts/${postID}`,
+    method: "PUT",
+    data: {
+      title: $('#title').val(),
+      content: $('#content').val(),
+    }
+  }).done(function() {
+    alert("Post updated successfully!");
+  }).fail(function() {
+    alert("Error updating post!");
+  }).always(function() {
+    $('#update-post').prop('disabled', false);
   });
 }

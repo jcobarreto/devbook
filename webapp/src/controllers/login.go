@@ -48,5 +48,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responses.JSON(w, http.StatusOK, nil)
+	responses.JSON(w, http.StatusOK, map[string]interface{}{
+		"authenticated": true,
+	})
 }

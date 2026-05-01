@@ -24,4 +24,16 @@ var postsRoutes = []Route{
 		Func:         controllers.UnlikePost,
 		AuthRequired: true,
 	},
+	{
+		URI:          "/posts/{postId}/update",
+		Method:       http.MethodGet,
+		Func:         controllers.LoadEditPostPage,
+		AuthRequired: true,
+	},
+	{
+		URI:          "/posts/{postId}",
+		Method:       http.MethodPut,
+		Func:         controllers.UpdatePost,
+		AuthRequired: true,
+	},
 }

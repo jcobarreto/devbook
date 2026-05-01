@@ -8,6 +8,7 @@ import (
 	"api/src/responses"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -112,6 +113,7 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdatePost(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("UserID extraído do token:")
 	userID, err := authentication.ExtractUserID(r)
 	if err != nil {
 		responses.Erro(w, http.StatusUnauthorized, err)
