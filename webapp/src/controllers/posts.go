@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"webapp/src/config"
 	"webapp/src/requests"
 	"webapp/src/responses"
+
+	"github.com/gorilla/mux"
 )
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -25,6 +28,54 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	url := fmt.Sprintf("%s/posts", config.APIURL)
 	response, err := requests.RequestWithAuth(r, http.MethodPost, url, bytes.NewBuffer(post))
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.HandleStatusCodeError(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
+
+func LikePost(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	postID, err := strconv.ParseUint(parameters["postId"], 10, 64)
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.ErroAPI{Erro: "Invalid post ID"})
+		return
+	}
+
+	url := fmt.Sprintf("%s/posts/%d/like", config.APIURL, postID)
+	response, err := requests.RequestWithAuth(r, http.MethodPost, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.HandleStatusCodeError(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
+
+func UnlikePost(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	postID, err := strconv.ParseUint(parameters["postId"], 10, 64)
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.ErroAPI{Erro: "Invalid post ID"})
+		return
+	}
+
+	url := fmt.Sprintf("%s/posts/%d/unlike", config.APIURL, postID)
+	response, err := requests.RequestWithAuth(r, http.MethodPost, url, nil)
 	if err != nil {
 		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
 		return

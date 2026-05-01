@@ -1,18 +1,43 @@
+{{ define "likes" }}
+  <i class="fa-solid fa-heart like-post"></i>
+  <span> {{ .Likes }} </span>
+{{ end }}
+
+{{ define "edit" }}
+  <a href="/edit" style="text-decoration: none;">
+    <i class="fa-solid fa-pen-to-square"></i>
+  </a>
+{{ end }}
+
+{{ define "delete" }}
+  <a href="/delete" style="text-decoration: none;">
+    <i class="fa-solid fa-trash text-danger"></i>
+  </a>
+{{ end }}
+
 {{ define "header-post" }}
     <h1 class="display-5 fw-bold"> {{ .Title }} </h1>
     <p class="col-md-8 fs-4"> {{ .Content }} </p>
-    <a href="#"> {{ .AuthorNick }} - {{ .CreatedAt }} </a>
+    <a href="#"> {{ .AuthorNick }} - {{ .CreatedAt.Format "02/01/2006" }} </a>
     <hr class="my-4">
 {{ end }}
 
 {{ define "post-with-permission" }}
     <div class="p-5 mb-4 bg-body-tertiary rounded-3" data-post-id="{{ .ID }}">
       {{ template "header-post" . }}
+      <p>
+        {{ template "likes" . }}
+        {{ template "edit" . }}
+        {{ template "delete" . }}
+      </p>
     </div>
 {{ end }}
 
 {{ define "post-without-permission" }}
     <div class="p-5 mb-4 bg-body-tertiary rounded-3" data-post-id="{{ .ID }}">
       {{ template "header-post" . }}
+      <p>
+        {{ template "likes" . }}
+      </p>
     </div>
 {{ end }}

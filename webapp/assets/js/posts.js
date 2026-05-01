@@ -1,5 +1,8 @@
 $('#new-post').on('submit', createPost);
 
+$(document).on('click', '.like-post', likePost);
+$(document).on('click', '.unlike-post', unlikePost);
+
 function createPost(event) {
   event.preventDefault();
 
@@ -14,5 +17,59 @@ function createPost(event) {
     window.location = '/home';
   }).fail(function() {
     alert("Error creating post!");
+  });
+}
+
+function likePost(event) {
+  event.preventDefault();
+
+  const clickedElement = $(event.currentTarget);
+  const postID = clickedElement.closest('.p-5').data('post-id');
+
+  clickedElement.prop('disabled', true);
+  $.ajax({
+    url: `/posts/${postID}/like`,
+    method: "POST",
+  }).done(function() {
+    const likeCountElement = clickedElement.next('span');
+    const likeCount = parseInt(likeCountElement.text());
+
+    likeCountElement.text(likeCount + 1);
+
+    clickedElement.addClass('unlike-post')
+    clickedElement.addClass('text-danger')
+    clickedElement.removeClass('like-post');
+
+  }).fail(function() {
+    alert("Error liking post!");
+  }).always(function() {
+    clickedElement.prop('disabled', false);
+  });
+}
+
+function unlikePost(event) {
+  event.preventDefault();
+
+  const clickedElement = $(event.currentTarget);
+  const postID = clickedElement.closest('.p-5').data('post-id');
+
+  clickedElement.prop('disabled', true);
+  $.ajax({
+    url: `/posts/${postID}/unlike`,
+    method: "POST",
+  }).done(function() {
+    const likeCountElement = clickedElement.next('span');
+    const likeCount = parseInt(likeCountElement.text());
+
+    likeCountElement.text(likeCount - 1);
+
+    clickedElement.removeClass('unlike-post');
+    clickedElement.removeClass('text-danger')
+    clickedElement.addClass('like-post')
+
+  }).fail(function() {
+    alert("Error unliking post!");
+  }).always(function() {
+    clickedElement.prop('disabled', false);
   });
 }
