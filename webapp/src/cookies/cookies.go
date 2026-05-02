@@ -36,6 +36,17 @@ func Save(w http.ResponseWriter, ID, token string) error {
 	return nil
 }
 
+// Delete removes the cookie from the client
+func Delete(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "data",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		MaxAge:   -1,
+	})
+}
+
 // Read return values stored in the cookie
 func Read(r *http.Request) (map[string]string, error) {
 	cookie, err := r.Cookie("data")

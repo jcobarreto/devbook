@@ -94,7 +94,7 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 	postID, err := strconv.ParseUint(parameters["postId"], 10, 64)
 	if err != nil {
-		responses.JSON(w, http.StatusBadRequest, responses.ErroAPI{Erro: "Invalid post ID"})
+		responses.JSON(w, http.StatusBadRequest, responses.ErroAPI{Erro: err.Error()})
 		return
 	}
 

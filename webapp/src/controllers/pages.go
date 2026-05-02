@@ -69,7 +69,6 @@ func LoadEditPostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer response.Body.Close()
-	fmt.Println("Response status code:", response.StatusCode)
 
 	if response.StatusCode >= 400 {
 		responses.HandleStatusCodeError(w, response)

@@ -76,10 +76,10 @@ function unlikePost(event) {
   });
 }
 
-function updatePost(event) {
+function updatePost() {
   $(this).prop('disabled', true);
 
-  const postID = clickedElement.data('post-id');
+  const postID = $(this).data('post-id');
 
   $.ajax({
     url: `/posts/${postID}`,
