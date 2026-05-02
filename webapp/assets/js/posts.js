@@ -4,6 +4,7 @@ $(document).on('click', '.like-post', likePost);
 $(document).on('click', '.unlike-post', unlikePost);
 
 $('#update-post').on('click', updatePost);
+$('.delete-post').on('click', deletePost);
 
 function createPost(event) {
   event.preventDefault();
@@ -14,11 +15,12 @@ function createPost(event) {
     data: {
       title: $('#title').val(),
       content: $('#content').val(),
-    }
+    },
+    dataType: "text",
   }).done(function() {
     window.location = '/home';
   }).fail(function() {
-    alert("Error creating post!");
+    Swal.fire("Ops!", "Error creating post!", "error");
   });
 }
 
@@ -43,7 +45,7 @@ function likePost(event) {
     clickedElement.removeClass('like-post');
 
   }).fail(function() {
-    alert("Error liking post!");
+    Swal.fire("Ops!", "Error liking post!", "error");
   }).always(function() {
     clickedElement.prop('disabled', false);
   });
@@ -70,7 +72,7 @@ function unlikePost(event) {
     clickedElement.addClass('like-post')
 
   }).fail(function() {
-    alert("Error unliking post!");
+    Swal.fire("Ops!", "Error unliking post!", "error");
   }).always(function() {
     clickedElement.prop('disabled', false);
   });
@@ -89,10 +91,48 @@ function updatePost() {
       content: $('#content').val(),
     }
   }).done(function() {
-    alert("Post updated successfully!");
+    Swal.fire({
+      title: 'Post Updated',
+      text: 'Your post has been updated successfully.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      window.location = '/home';
+    });
   }).fail(function() {
-    alert("Error updating post!");
+    Swal.fire("Ops!", "Error updating post!", "error");
   }).always(function() {
     $('#update-post').prop('disabled', false);
+  });
+}
+
+function deletePost(event) {
+  event.preventDefault();
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "This action cannot be undone!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const clickedElement = $(event.target);
+      const post = clickedElement.closest('div');
+      const postID = post.data('post-id');
+
+      $.ajax({
+        url: `/posts/${postID}`,
+        method: "DELETE",
+      }).done(function() {
+        post.fadeOut("slow", function() {
+          $(this).remove();
+        });
+      }).fail(function() {
+        Swal.fire("Ops!", "Error deleting post!", "error");
+      });
+    }
   });
 }

@@ -31,7 +31,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer response.Body.Close()
-
+	fmt.Println("Login response status:", response.StatusCode)
 	if response.StatusCode >= 400 {
 		responses.HandleStatusCodeError(w, response)
 		return

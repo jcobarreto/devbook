@@ -13,6 +13,6 @@ function signin(event) {
   }).done(function() {
     window.location = '/home';
   }).fail(function() {
-    alert('Error logging in!');
+    Swal.fire("Ops!", "Invalid email or password!", "error");
   });
 }

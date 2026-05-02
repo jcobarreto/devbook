@@ -1,5 +1,5 @@
 {{ define "likes" }}
-  <i class="fa-solid fa-heart like-post"></i>
+  <i class="fa-solid fa-heart like-post" style="cursor: pointer"></i>
   <span> {{ .Likes }} </span>
 {{ end }}
 
@@ -10,9 +10,7 @@
 {{ end }}
 
 {{ define "delete" }}
-  <a href="/posts/{{ .ID }}/delete" style="text-decoration: none;">
-    <i class="fa-solid fa-trash text-danger"></i>
-  </a>
+  <i class="fa-solid fa-trash text-danger delete-post" style="cursor: pointer"></i>
 {{ end }}
 
 {{ define "header-post" }}
