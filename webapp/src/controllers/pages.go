@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"webapp/src/config"
 	"webapp/src/cookies"
 	"webapp/src/models"
@@ -43,7 +44,7 @@ func LoadMainPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var posts []models.Posts
+	var posts []models.Post
 	if err = json.NewDecoder(response.Body).Decode(&posts); err != nil {
 		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErroAPI{Erro: err.Error()})
 		return
@@ -53,7 +54,7 @@ func LoadMainPage(w http.ResponseWriter, r *http.Request) {
 	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
 
 	utils.ExecuteTemplate(w, "home.html", struct {
-		Posts  []models.Posts
+		Posts  []models.Post
 		UserID uint64
 	}{
 		Posts:  posts,
@@ -82,11 +83,36 @@ func LoadEditPostPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var post models.Posts
+	var post models.Post
 	if err = json.NewDecoder(response.Body).Decode(&post); err != nil {
 		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErroAPI{Erro: err.Error()})
 		return
 	}
 
 	utils.ExecuteTemplate(w, "update-post.html", post)
+}
+
+func LoadUsersPage(w http.ResponseWriter, r *http.Request) {
+	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
+	url := fmt.Sprintf("%s/users?user=%s", config.APIURL, nameOrNick)
+
+	response, err := requests.RequestWithAuth(r, http.MethodGet, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.HandleStatusCodeError(w, response)
+		return
+	}
+
+	var users []models.User
+	if err := json.NewDecoder(response.Body).Decode(&users); err != nil {
+		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+
+	utils.ExecuteTemplate(w, "users.html", users)
 }

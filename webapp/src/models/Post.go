@@ -2,8 +2,8 @@ package models
 
 import "time"
 
-// Posts represents a user's post
-type Posts struct {
+// Post represents a user's post
+type Post struct {
 	ID         uint64    `json:"id,omitempty"`
 	Title      string    `json:"title,omitempty"`
 	Content    string    `json:"content,omitempty"`
