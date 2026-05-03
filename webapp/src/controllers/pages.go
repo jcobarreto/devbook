@@ -116,3 +116,30 @@ func LoadUsersPage(w http.ResponseWriter, r *http.Request) {
 
 	utils.ExecuteTemplate(w, "users.html", users)
 }
+
+func LoadUserProfilePage(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	userID, err := strconv.ParseUint(parameters["userId"], 10, 64)
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.ErroAPI{Erro: "Invalid user ID"})
+		return
+	}
+
+	user, err := models.GetUserProfile(userID, r)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+
+	cookie, _ := cookies.Read(r)
+	loggedUserID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	// fmt.Println(user, err)
+	utils.ExecuteTemplate(w, "user.html", struct {
+		User         models.User
+		UserLoggedID uint64
+	}{
+		User:         user,
+		UserLoggedID: loggedUserID,
+	})
+}

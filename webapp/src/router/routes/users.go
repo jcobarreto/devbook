@@ -24,4 +24,22 @@ var userRoutes = []Route{
 		Func:         controllers.LoadUsersPage,
 		AuthRequired: true,
 	},
+	{
+		URI:          "/users/{userId}",
+		Method:       http.MethodGet,
+		Func:         controllers.LoadUserProfilePage,
+		AuthRequired: true,
+	},
+	{
+		URI:          "/users/{userId}/unfollow",
+		Method:       http.MethodPost,
+		Func:         controllers.UnfollowUser,
+		AuthRequired: true,
+	},
+	{
+		URI:          "/users/{userId}/follow",
+		Method:       http.MethodPost,
+		Func:         controllers.FollowUser,
+		AuthRequired: true,
+	},
 }
