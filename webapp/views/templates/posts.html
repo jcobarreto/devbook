@@ -16,7 +16,7 @@
 {{ define "header-post" }}
     <h1 class="display-5 fw-bold"> {{ .Title }} </h1>
     <p class="col-md-8 fs-4"> {{ .Content }} </p>
-    <a href="#"> {{ .AuthorNick }} - {{ .CreatedAt.Format "02/01/2006" }} </a>
+    <a href="/users/{{ .AuthorID }}"> {{ .AuthorNick }} - {{ .CreatedAt.Format "02/01/2006" }} </a>
     <hr class="my-4">
 {{ end }}
 

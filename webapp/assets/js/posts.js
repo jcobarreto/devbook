@@ -20,7 +20,7 @@ function createPost(event) {
   }).done(function() {
     window.location = '/home';
   }).fail(function() {
-    Swal.fire("Ops!", "Error creating post!", "error");
+    Swal.fire("Ops...", "Error creating post!", "error");
   });
 }
 
@@ -45,7 +45,7 @@ function likePost(event) {
     clickedElement.removeClass('like-post');
 
   }).fail(function() {
-    Swal.fire("Ops!", "Error liking post!", "error");
+    Swal.fire("Ops...", "Error liking post!", "error");
   }).always(function() {
     clickedElement.prop('disabled', false);
   });
@@ -72,7 +72,7 @@ function unlikePost(event) {
     clickedElement.addClass('like-post')
 
   }).fail(function() {
-    Swal.fire("Ops!", "Error unliking post!", "error");
+    Swal.fire("Ops...", "Error unliking post!", "error");
   }).always(function() {
     clickedElement.prop('disabled', false);
   });
@@ -100,7 +100,7 @@ function updatePost() {
       window.location = '/home';
     });
   }).fail(function() {
-    Swal.fire("Ops!", "Error updating post!", "error");
+    Swal.fire("Ops...", "Error updating post!", "error");
   }).always(function() {
     $('#update-post').prop('disabled', false);
   });
@@ -131,7 +131,7 @@ function deletePost(event) {
           $(this).remove();
         });
       }).fail(function() {
-        Swal.fire("Ops!", "Error deleting post!", "error");
+        Swal.fire("Ops...", "Error deleting post!", "error");
       });
     }
   });

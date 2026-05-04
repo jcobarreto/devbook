@@ -40,7 +40,7 @@ function createUser(event) {
       }).done(function() {
         window.location = '/home';
       }).fail(function() {
-        Swal.fire("Ops!", "Error logging in after registration!", "error");
+        Swal.fire("Ops...", "Error logging in after registration!", "error");
       });
     });
   }).fail(function() {

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"webapp/src/config"
+	"webapp/src/cookies"
 	"webapp/src/requests"
 	"webapp/src/responses"
 
@@ -88,6 +89,37 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer response.Body.Close()
 
+	if response.StatusCode >= 400 {
+		responses.HandleStatusCodeError(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
+
+func EditUser(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	user, err := json.Marshal(map[string]string{
+		"name":  r.FormValue("name"),
+		"nick":  r.FormValue("nick"),
+		"email": r.FormValue("email"),
+	})
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+
+	cookie, _ := cookies.Read(r)
+	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	url := fmt.Sprintf("%s/users/%d", config.APIURL, userID)
+	response, err := requests.RequestWithAuth(r, http.MethodPut, url, bytes.NewBuffer(user))
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+	fmt.Println(response.Body)
 	if response.StatusCode >= 400 {
 		responses.HandleStatusCodeError(w, response)
 		return

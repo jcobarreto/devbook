@@ -28,7 +28,7 @@ func GetUserProfile(userID uint64, r *http.Request) (User, error) {
 	followingChannel := make(chan []User)
 	postsChannel := make(chan []Post)
 
-	go getUserData(userChannel, userID, r)
+	go GetUserData(userChannel, userID, r)
 	go getFollowers(followersChannel, userID, r)
 	go getFollowing(followingChannel, userID, r)
 	go getPosts(postsChannel, userID, r)
@@ -76,7 +76,7 @@ func GetUserProfile(userID uint64, r *http.Request) (User, error) {
 }
 
 // getUserData retrieves the basic data of a user by their ID
-func getUserData(channel chan<- User, userID uint64, r *http.Request) {
+func GetUserData(channel chan<- User, userID uint64, r *http.Request) {
 	url := fmt.Sprintf("%s/users/%d", config.APIURL, userID)
 	response, err := requests.RequestWithAuth(r, http.MethodGet, url, nil)
 	if err != nil {
