@@ -127,3 +127,34 @@ func EditUser(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, response.StatusCode, nil)
 }
+
+// UpdatePassword allows a user to update their password by providing the current and new passwords
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	passwords, err := json.Marshal(map[string]string{
+		"current": r.FormValue("current"),
+		"new":     r.FormValue("new"),
+	})
+	if err != nil {
+		responses.JSON(w, http.StatusBadRequest, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+
+	cookie, _ := cookies.Read(r)
+	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	url := fmt.Sprintf("%s/users/%d/update-password", config.APIURL, userID)
+	response, err := requests.RequestWithAuth(r, http.MethodPost, url, bytes.NewBuffer(passwords))
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.HandleStatusCodeError(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}
