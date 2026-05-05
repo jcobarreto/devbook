@@ -158,3 +158,24 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, response.StatusCode, nil)
 }
+
+// DeleteUser allows a user to delete their account by sending a DELETE request to the API with their user ID
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+	userID, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	url := fmt.Sprintf("%s/users/%d", config.APIURL, userID)
+	response, err := requests.RequestWithAuth(r, http.MethodDelete, url, nil)
+	if err != nil {
+		responses.JSON(w, http.StatusInternalServerError, responses.ErroAPI{Erro: err.Error()})
+		return
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode >= 400 {
+		responses.HandleStatusCodeError(w, response)
+		return
+	}
+
+	responses.JSON(w, response.StatusCode, nil)
+}

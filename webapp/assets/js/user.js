@@ -2,6 +2,7 @@ $('#unfollow').on('click', unfollow);
 $('#follow').on('click', follow);
 $('#edit-user').on('submit', edit);
 $('#update-password').on('submit', updatePassword);
+$('#delete-user').on('click', deleteUser);
 
 function unfollow() {
   const UsedId = $(this).data('user-id');
@@ -76,5 +77,30 @@ function updatePassword(event) {
       });
   }).fail(function() {
     Swal.fire("Ops...", "Error updating password!", "error");
+  });
+}
+
+function deleteUser() {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "This action cannot be undone!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete my account!",
+    cancelButtonText: "No, keep my account!"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: "/delete-user",
+        method: "DELETE",
+      }).done(function() {
+        Swal.fire("Deleted!", "Your account has been deleted.", "success")
+            .then(function() {
+              window.location = '/logout';
+            });
+      }).fail(function() {
+        Swal.fire("Ops...", "Error deleting user!", "error");
+      });
+    }
   });
 }
